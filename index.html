@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Sentiment Analyzer</title>
+  <style>
+    body { font-family: Arial; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin:0; }
+    .container { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    textarea { width: 100%; height: 100px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; }
+    button { background: #4F46E5; color: white; border: none; padding: 12px; border-radius: 8px; margin-top: 15px; width: 100%; font-size: 16px; }
+    button:hover { background: #4338CA; }
+    #result { margin-top: 20px; font-size: 18px; font-weight: bold; }
+    .positive { color: green; } .negative { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI Sentiment Analyzer</h1>
+    <textarea id="textInput" placeholder="I love this product!"></textarea>
+    <button onclick="analyze()">Analyze Sentiment</button>
+    <div id="result"></div>
+  </div>
+<script>
+async function analyze() {
+  const text = document.getElementById('textInput').value;
+  const resultDiv = document.getElementById('result');
+  if(!text) return resultDiv.innerHTML = "Please enter text";
+  resultDiv.innerHTML = "Analyzing...";
+  const res = await fetch('https://ml-sentiment-api.vercel.app/predict', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ text: text })
+  });
+  const data = await res.json();
+  resultDiv.innerHTML = `Result: <span class="${data.sentiment.toLowerCase()}">${data.sentiment}</span><br>Score: ${data.score}`;
+}
+</script>
+</body>
+</html>
